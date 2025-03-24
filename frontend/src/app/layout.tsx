@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import '@mysten/dapp-kit/dist/index.css';
 import { ConnectButton, createNetworkConfig, SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
 import { getFullnodeUrl } from '@mysten/sui/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

@@ -33,6 +33,22 @@ export default function Navbar() {
             Governance
           </Link>
         </li>
+        <li>
+          <Link
+            href="/governance"
+            className={`px-4 py-2 rounded ${pathname === "/governance" ? "bg-gray-600" : ""}`}
+          >
+            Governance
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/wallet"
+            className={`px-4 py-2 rounded ${pathname === "/governance" ? "bg-gray-600" : ""}`}
+          >
+            Wallet
+          </Link>
+        </li>
       </ul>
     </div>
   );
