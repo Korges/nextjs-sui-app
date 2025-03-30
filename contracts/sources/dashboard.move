@@ -22,3 +22,7 @@ public fun new(ctx: &mut TxContext) {
 public fun register_propoasal(self: &mut Dashboard, proposal_id: ID) {
     self.proposals_ids.push_back(proposal_id);
 }
+
+#[test] fun test_module_init() {
+
+}
