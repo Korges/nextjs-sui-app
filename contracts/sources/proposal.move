@@ -32,3 +32,31 @@ public fun create(
 
     transfer::share_object( proposal);
 }
+
+public fun title(proposal: &Proposal): String {
+    proposal.title
+}
+
+public fun description(proposal: &Proposal): String {
+    proposal.description
+}
+
+public fun voted_yes_count(proposal: &Proposal): u64 {
+    proposal.voted_yes_count
+}
+
+public fun voted_no_count(proposal: &Proposal): u64 {
+    proposal.voted_no_count
+}
+
+public fun expiration(proposal: &Proposal): u64 {
+    proposal.expiration
+}
+
+public fun creator(proposal: &Proposal): address {
+    proposal.creator
+}
+
+public fun voter_registry(proposal: &Proposal): vector<address> {
+    proposal.voter_registry
+}
