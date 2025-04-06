@@ -18,19 +18,10 @@ fun test_create_proposal_with_admin_capability() {
 
     scenario.next_tx(user);
     {
-        let title = b"Title".to_string();
-        let desc = b"Description".to_string();
-        let admin_cap = scenario.take_from_sender<AdminCapability>();
+        let admin_capability = scenario.take_from_sender<AdminCapability>();
+        new_proposal( &admin_capability, scenario.ctx());
 
-        proposal::create(
-            &admin_cap,
-            title, 
-            desc, 
-            2000000000, 
-            scenario.ctx()
-        );
-
-        test_scenario::return_to_sender(&scenario, admin_cap);
+        test_scenario::return_to_sender(&scenario, admin_capability);
     };
 
     scenario.next_tx(user);
@@ -66,20 +57,24 @@ fun test_create_proposal_no_admin_capability() {
 
     scenario.next_tx(user);
     {
-        let title = b"Title".to_string();
-        let desc = b"Description".to_string();
-        let admin_cap = scenario.take_from_sender<AdminCapability>();
+        let admin_capability = scenario.take_from_sender<AdminCapability>();
+        new_proposal( &admin_capability, scenario.ctx());
 
-        proposal::create(
-            &admin_cap,
-            title, 
-            desc, 
-            2000000000, 
-            scenario.ctx()
-        );
-
-        test_scenario::return_to_sender(&scenario, admin_cap);
+        test_scenario::return_to_sender(&scenario, admin_capability);
     };
 
     scenario.end();
+}
+
+fun new_proposal(admin_capability: &AdminCapability, ctx: &mut TxContext) {
+    let title = b"Title".to_string();
+    let desc = b"Description".to_string();
+
+    proposal::create(
+            admin_capability,
+            title, 
+            desc, 
+            2000000000, 
+            ctx
+    );
 }
