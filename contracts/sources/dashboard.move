@@ -6,8 +6,16 @@ public struct Dashboard has key {
     proposals_ids: vector<ID>
 }
 
+public struct AdminCapability has key {
+    id: UID,
+}
+
 fun init(ctx: &mut TxContext) {
     new(ctx);
+    transfer::transfer(
+        AdminCapability {id: object::new(ctx)}, 
+        ctx.sender()
+    );
 }
 
 public fun new(ctx: &mut TxContext) {
@@ -23,7 +31,16 @@ public fun register_propoasal(self: &mut Dashboard, proposal_id: ID) {
     self.proposals_ids.push_back(proposal_id);
 }
 
-#[test] fun test_module_init() {
+#[test_only]
+public fun issue_admin_cap(ctx: &mut TxContext) {
+    transfer::transfer(
+        AdminCapability {id: object::new(ctx)}, 
+        ctx.sender()
+    );
+}
+
+#[test]
+fun test_module_init() {
     use sui::test_scenario;
 
     let creator = @0xCA;

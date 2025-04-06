@@ -1,6 +1,7 @@
 module voting_system::proposal;
 
 use std::string::String;
+use voting_system::dashboard::AdminCapability;
 
 public struct Proposal has key {
     id: UID,
@@ -14,6 +15,7 @@ public struct Proposal has key {
 }
 
 public fun create(
+    admin_capability: &AdminCapability,
     title: String,
     description: String,
     expiration: u64,
