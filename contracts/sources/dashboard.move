@@ -1,5 +1,10 @@
 module voting_system::dashboard;
 
+use sui::types;
+
+const EDuplicateProposal: u64 = 0;
+const EInvalidOTW: u64 = 1;
+
 
 public struct Dashboard has key {
     id: UID,
@@ -20,7 +25,8 @@ fun init(otw: DASHBOARD, ctx: &mut TxContext) {
     );
 }
 
-public fun new(_otw: DASHBOARD, ctx: &mut TxContext) {
+public fun new(otw: DASHBOARD, ctx: &mut TxContext) {
+    assert!(types::is_one_time_witness(&otw), EInvalidOTW);
     let dashboard = Dashboard {
         id: object::new(ctx),
         proposals_ids: vector[]
@@ -30,7 +36,12 @@ public fun new(_otw: DASHBOARD, ctx: &mut TxContext) {
 }
 
 public fun register_propoasal(self: &mut Dashboard, proposal_id: ID) {
+    assert!(!self.proposals_ids.contains(&proposal_id), EDuplicateProposal);
     self.proposals_ids.push_back(proposal_id);
+}
+
+public fun proposals_ids(self: &Dashboard): vector<ID> {
+    self.proposals_ids
 }
 
 #[test_only]
@@ -39,6 +50,11 @@ public fun issue_admin_cap(ctx: &mut TxContext) {
         AdminCapability {id: object::new(ctx)}, 
         ctx.sender()
     );
+}
+
+#[test_only]
+public fun new_otw(ctx: &mut TxContext): DASHBOARD {
+    DASHBOARD {}
 }
 
 #[test]
