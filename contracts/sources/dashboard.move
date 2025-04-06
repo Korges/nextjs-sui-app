@@ -11,14 +11,15 @@ public struct AdminCapability has key {
 }
 
 fun init(ctx: &mut TxContext) {
-    new(ctx);
+    let admin_capability = AdminCapability {id: object::new(ctx)};
+    new(&admin_capability, ctx);
     transfer::transfer(
-        AdminCapability {id: object::new(ctx)}, 
+        admin_capability, 
         ctx.sender()
     );
 }
 
-public fun new(ctx: &mut TxContext) {
+public fun new(_admin_capability: &AdminCapability, ctx: &mut TxContext) {
     let dashboard = Dashboard {
         id: object::new(ctx),
         proposals_ids: vector[]
