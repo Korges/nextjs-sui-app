@@ -1,4 +1,4 @@
-module voting_system::dashboard;
+module governance::dashboard;
 
 use sui::types;
 
@@ -11,7 +11,7 @@ public struct Dashboard has key {
     proposals_ids: vector<ID>
 }
 
-public struct AdminCapability has key {
+public struct AdminCap has key {
     id: UID,
 }
 
@@ -20,7 +20,7 @@ public struct DASHBOARD has drop {}
 fun init(otw: DASHBOARD, ctx: &mut TxContext) {
     new(otw, ctx);
     transfer::transfer(
-        AdminCapability {id: object::new(ctx)}, 
+        AdminCap {id: object::new(ctx)}, 
         ctx.sender()
     );
 }
@@ -47,7 +47,7 @@ public fun proposals_ids(self: &Dashboard): vector<ID> {
 #[test_only]
 public fun issue_admin_cap(ctx: &mut TxContext) {
     transfer::transfer(
-        AdminCapability {id: object::new(ctx)}, 
+        AdminCap {id: object::new(ctx)}, 
         ctx.sender()
     );
 }

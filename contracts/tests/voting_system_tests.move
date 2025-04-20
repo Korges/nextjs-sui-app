@@ -1,12 +1,12 @@
 #[test_only]
-module voting_system::voting_system_tests;
+module governance::voting_system_tests;
 
 use sui::test_scenario;
-use voting_system::proposal::{Self};
-use voting_system::dashboard::{Self, AdminCapability, Dashboard};
+use governance::proposal::{Self};
+use governance::dashboard::{Self, AdminCap, Dashboard};
 
 #[test]
-fun test_create_proposal_with_admin_capability() {
+fun test_create_proposal_with_admin_cap() {
 
 
     let user = @0xCA;
@@ -18,10 +18,10 @@ fun test_create_proposal_with_admin_capability() {
 
     scenario.next_tx(user);
     {
-        let admin_capability = scenario.take_from_sender<AdminCapability>();
-        new_proposal( &admin_capability, scenario.ctx());
+        let admin_cap = scenario.take_from_sender<AdminCap>();
+        new_proposal( &admin_cap, scenario.ctx());
 
-        test_scenario::return_to_sender(&scenario, admin_capability);
+        test_scenario::return_to_sender(&scenario, admin_cap);
     };
 
     scenario.next_tx(user);
@@ -44,7 +44,7 @@ fun test_create_proposal_with_admin_capability() {
 
 #[test]
 #[expected_failure(abort_code = test_scenario::EEmptyInventory)]
-fun test_create_proposal_no_admin_capability() {
+fun test_create_proposal_no_admin_cap() {
 
 
     let user = @0xB0B;
@@ -57,10 +57,10 @@ fun test_create_proposal_no_admin_capability() {
 
     scenario.next_tx(user);
     {
-        let admin_capability = scenario.take_from_sender<AdminCapability>();
-        new_proposal( &admin_capability, scenario.ctx());
+        let admin_cap = scenario.take_from_sender<AdminCap>();
+        new_proposal( &admin_cap, scenario.ctx());
 
-        test_scenario::return_to_sender(&scenario, admin_capability);
+        test_scenario::return_to_sender(&scenario, admin_cap);
     };
 
     scenario.end();
@@ -79,8 +79,8 @@ fun test_register_proposal_as_admin() {
     scenario.next_tx(admin);
     {
         let mut dashboard = scenario.take_shared<Dashboard>();
-        let admin_capability = scenario.take_from_sender<AdminCapability>();
-        let proposal_id = new_proposal(&admin_capability, scenario.ctx());
+        let admin_cap = scenario.take_from_sender<AdminCap>();
+        let proposal_id = new_proposal(&admin_cap, scenario.ctx());
 
         dashboard.register_propoasal(proposal_id);
         let proposals_ids = dashboard.proposals_ids();
@@ -88,7 +88,7 @@ fun test_register_proposal_as_admin() {
 
         assert!(proposal_exists);
 
-        scenario.return_to_sender(admin_capability);
+        scenario.return_to_sender(admin_cap);
         test_scenario::return_shared(dashboard);
     };
 
@@ -96,12 +96,12 @@ fun test_register_proposal_as_admin() {
 
 }
 
-fun new_proposal(admin_capability: &AdminCapability, ctx: &mut TxContext): ID {
+fun new_proposal(admin_cap: &AdminCap, ctx: &mut TxContext): ID {
     let title = b"Title".to_string();
     let desc = b"Description".to_string();
 
     let proposal_id = proposal::create(
-            admin_capability,
+            admin_cap,
             title, 
             desc, 
             2000000000, 
