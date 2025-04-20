@@ -1,3 +1,7 @@
+'use client';
+
+import { useNetworkVariable } from "@/config/networkConfig";
+import { TESTNET_DASHBOARD_ID } from "@/constants";
 
 const PROPOSAL_COUNT = 7;
 
@@ -13,6 +17,12 @@ const ProposalItem = () => {
   }
 
   const ProposalView = () => {
+    const dashboardId = useNetworkVariable("dashboardId");
+
+    console.log(dashboardId)
+
+    
+
     return (
       <>
         <h1 className="text-4xl font-bold mb-8">New Proposals</h1>
