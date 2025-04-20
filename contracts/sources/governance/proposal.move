@@ -15,7 +15,7 @@ public struct Proposal has key {
 }
 
 public fun create(
-    admin_cap: &AdminCap,
+    _admin_cap: &AdminCap,
     title: String,
     description: String,
     expiration: u64,
