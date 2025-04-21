@@ -1,12 +1,17 @@
-//  "use client"; 
+//  "use client";
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import '@mysten/dapp-kit/dist/index.css';
-import { ConnectButton, createNetworkConfig, SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
-import { getFullnodeUrl } from '@mysten/sui/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import "@mysten/dapp-kit/dist/index.css";
+import {
+  ConnectButton,
+  createNetworkConfig,
+  SuiClientProvider,
+  WalletProvider,
+} from "@mysten/dapp-kit";
+import { getFullnodeUrl } from "@mysten/sui/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Providers from "@/components/Providers";
 
@@ -30,11 +35,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
-      <Providers>{children}</Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

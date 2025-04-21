@@ -1,12 +1,8 @@
 "use client";
 
 export default function App() {
-  return (
-          <Home />
-
-  )
+  return <Home />;
 }
-  
 
 function Home() {
   return (
