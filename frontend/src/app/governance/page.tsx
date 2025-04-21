@@ -35,10 +35,6 @@ const ProposalView = () => {
   );
 };
 
-type SuiID = {
-  id: string;
-};
-
 function getDashboardFields(data: SuiObjectData) {
   if (data.content?.dataType !== "moveObject") return null;
 
