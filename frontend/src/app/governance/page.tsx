@@ -19,11 +19,9 @@ const ProposalView = () => {
     },
   });
 
-  if (isPending)
-    return <div className="text-center text-gray-500">Loading...</div>;
+  if (isPending) return <div className="text-center text-gray-500">Loading...</div>;
   if (error) return <div className="text-red-500">Error: {error.message}</div>;
-  if (!dataResponse.data)
-    return <div className="text-center text-gray-500">Not found...</div>;
+  if (!dataResponse.data) return <div className="text-center text-gray-500">Not found...</div>;
 
   return (
     <>

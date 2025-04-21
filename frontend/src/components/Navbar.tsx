@@ -10,10 +10,7 @@ export default function Navbar() {
     <div>
       <ul className="flex space-x-4 text-white">
         <li>
-          <Link
-            href="/"
-            className={`px-4 py-2 rounded ${pathname === "/" ? "bg-gray-600" : ""}`}
-          >
+          <Link href="/" className={`px-4 py-2 rounded ${pathname === "/" ? "bg-gray-600" : ""}`}>
             Home
           </Link>
         </li>

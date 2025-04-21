@@ -2,11 +2,7 @@
 
 import Link from "next/link";
 import Navbar from "./Navbar";
-import {
-  ConnectButton,
-  ConnectModal,
-  useCurrentAccount,
-} from "@mysten/dapp-kit";
+import { ConnectButton, ConnectModal, useCurrentAccount } from "@mysten/dapp-kit";
 import { useState } from "react";
 
 export default function Header() {
