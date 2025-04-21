@@ -1,7 +1,7 @@
 "use client";
 
+import { ProposalItem } from "@/components/proposal/ProposalItem";
 import { useNetworkVariable } from "@/config/networkConfig";
-import { TESTNET_DASHBOARD_ID } from "@/constants";
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { SuiObjectData } from "@mysten/sui/client";
 
