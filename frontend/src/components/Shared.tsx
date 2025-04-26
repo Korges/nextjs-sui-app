@@ -8,7 +8,7 @@ type TextProps = {
 
 export const CustomText: FC<TextProps> = ({text, isError, centered}) => {
   const textColor = isError ? "text-red-500" : "text-gray-500";
-  const centeredClassName = isCentered ? "text-centered" : "";
+  const centeredClassName = centered ? "text-centered" : "";
 
   return <div className={`${centeredClassName} ${textColor}`}>{text}</div>;
 }

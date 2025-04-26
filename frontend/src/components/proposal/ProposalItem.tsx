@@ -1,14 +1,16 @@
 import { useSuiClientQuery } from "@mysten/dapp-kit";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { CustomText } from "../Shared";
 import { Proposal } from "@/types";
 import { SuiObjectData } from "@mysten/sui/client";
+import { VoteModal } from "./VoteModal";
 
-type ProposalItemProps = {
+interface ProposalItemProps {
   id: string;
 };
 
 export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     data: dataResponse,
     error,
@@ -29,7 +31,11 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
   if(!proposal) return <CustomText text="No data found"/>
 
   return (
-      <div className="p-4 border rounded-lg shadow-sm wg-white dark:bg-gray-800 hover:border-blue-500">
+    <>
+      <div 
+      onClick={() => setIsModalOpen(true)}
+      className="p-4 border rounded-lg shadow-sm wg-white dark:bg-gray-800 hover:border-blue-500"
+      >
         <p className="text-xl font-semibold mb-2">Title: {proposal.title}</p>
         <p className="text-gray-700 dark:text-gray-300">{proposal.description}</p>
         <div className="flex items-center justify-between mt-4">
@@ -48,6 +54,13 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
           </div>
         </div>
       </div>
+      <VoteModal
+        proposal={proposal}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onVote={(votedYes: boolean) => console.log(votedYes)}
+      />
+    </>
   );
 };
 
