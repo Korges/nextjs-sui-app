@@ -4,6 +4,9 @@ module governance::voting_system_tests;
 use sui::test_scenario;
 use governance::proposal::{Self};
 use governance::dashboard::{Self, AdminCap, Dashboard};
+use governance::proposal::Proposal;
+
+const EWrongVoteCount: u64 = 0;
 
 #[test]
 fun test_create_proposal_with_admin_cap() {
@@ -45,8 +48,6 @@ fun test_create_proposal_with_admin_cap() {
 #[test]
 #[expected_failure(abort_code = test_scenario::EEmptyInventory)]
 fun test_create_proposal_no_admin_cap() {
-
-
     let user = @0xB0B;
     let admin = @0xA01;
 
@@ -109,4 +110,39 @@ fun new_proposal(admin_cap: &AdminCap, ctx: &mut TxContext): ID {
     );
 
     proposal_id
+}
+
+#[test]
+fun test_voting() {
+    let user = @0xB0B;
+    let admin = @0xA01;
+
+    let mut scenario = test_scenario::begin(admin);
+    {
+        dashboard::issue_admin_cap(scenario.ctx());
+    };
+
+    scenario.next_tx(admin);
+    {
+        let admin_cap = scenario.take_from_sender<AdminCap>();
+        new_proposal( &admin_cap, scenario.ctx());
+
+        test_scenario::return_to_sender(&scenario, admin_cap);
+    };
+
+    scenario.next_tx(user);
+    {
+        let mut proposal = scenario.take_shared<Proposal>();
+
+        proposal.vote(true, scenario.ctx());
+        proposal.vote(true, scenario.ctx());
+        proposal.vote(false, scenario.ctx());
+
+        assert!(proposal.voted_yes_count() == 2, EWrongVoteCount);
+        assert!(proposal.voted_no_count() == 1, EWrongVoteCount);
+
+        test_scenario::return_shared(proposal);
+    };
+
+    scenario.end();
 }
