@@ -30,27 +30,33 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
 
   if(!proposal) return <CustomText text="No data found"/>
 
+  const expiration = proposal.expiration;
+  const isExpired = isUnixTimeExpired(expiration);
+
+
   return (
     <>
-      <div 
-      onClick={() => setIsModalOpen(true)}
-      className="p-4 border rounded-lg shadow-sm wg-white dark:bg-gray-800 hover:border-blue-500"
+      <div
+        onClick={() => !isExpired && setIsModalOpen(true)}
+        className={`${isExpired ? "cursor-not-allowed border-gray-600" : "hover:border-blue-500"}
+          p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800  transition-colors cursor-pointer`}
       >
-        <p className="text-xl font-semibold mb-2">Title: {proposal.title}</p>
-        <p className="text-gray-700 dark:text-gray-300">{proposal.description}</p>
+        <p className={`${isExpired ? "text-gray-500" : "text-gray-700"} text-xl font-semibold mb-2"`}>Title: {proposal.title}</p>
+        <p className={`${isExpired ? "text-gray-500" : "text-gray-700"} dark:text-gray-300}`}>{proposal.description}</p>
         <div className="flex items-center justify-between mt-4">
           <div className="flex space-x-4">
-            <div className="flex items-center text-green-600">
+            <div className={`${isExpired ? "text-green-900" : "text-green-600"} flex items-center `}>
               <span className="mr-1">👍</span>
               {proposal.votedYesCount}
             </div>
-            <div className="flex items-center text-red-600">
+            <div className={`${isExpired ? "text-red-900" : "text-red-600"} flex items-center `}>
               <span className="mr-1">👎</span>
               {proposal.votedNoCount}
             </div>
           </div>
           <div>
-            <CustomText text={formatUnixTime(proposal.expiration)}/>
+            <CustomText text={formatUnixTime(expiration)}/>
+            <p className={`${isExpired ? "text-gray-600" : "text-gray-300"}`}>{formatUnixTime(expiration)}</p>
           </div>
         </div>
       </div>
@@ -77,7 +83,15 @@ function parseProposal(data: SuiObjectData): Proposal | null {
   }
 }
 
+function isUnixTimeExpired(unixTimeSec: number) {
+  return new Date(unixTimeSec * 1000) < new Date();
+
+}
+
 function formatUnixTime(timestampSec: number) {
+  if (isUnixTimeExpired(timestampSec)) {
+    return "Expired";
+  }
   return new Date(timestampSec * 1000).toLocaleDateString("en-US", {
     month: "short",
     day: "2-digit",
