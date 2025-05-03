@@ -2,11 +2,11 @@
 module governance::voting_system_tests;
 
 use sui::test_scenario;
-use governance::proposal::{Self};
+use governance::proposal::{Self, Proposal, VoteProofNFT};
 use governance::dashboard::{Self, AdminCap, Dashboard};
-use governance::proposal::Proposal;
 
 const EWrongVoteCount: u64 = 0;
+const EWrongNftUrl: u64 = 1;
 
 #[test]
 fun test_create_proposal_with_admin_cap() {
@@ -159,7 +159,7 @@ fun test_voting() {
 }
 
 #[test]
-#[expected_failure(abort_code = proposal::EDuplicateVote)]
+#[expected_failure(abort_code = governance::proposal::EDuplicateVote)]
 fun test_duplicate_voting() {
     let bob = @0xB0B;
     let admin = @0xA01;
@@ -190,3 +190,37 @@ fun test_duplicate_voting() {
     scenario.end();
 }
 
+#[test]
+fun test_issue_vote_proof() {
+    let bob = @0xB0B;
+    let admin = @0xA01;
+
+    let mut scenario = test_scenario::begin(admin);
+    {
+        dashboard::issue_admin_cap(scenario.ctx());
+    };
+
+    scenario.next_tx(admin);
+    {
+        let admin_cap = scenario.take_from_sender<AdminCap>();
+        new_proposal( &admin_cap, scenario.ctx());
+        test_scenario::return_to_sender(&scenario, admin_cap);
+    };
+
+    scenario.next_tx(bob);
+    {
+        let mut proposal = scenario.take_shared<Proposal>();
+        proposal.vote(true, scenario.ctx());
+        test_scenario::return_shared(proposal);
+    };
+
+    scenario.next_tx(bob);
+    {
+        let vote_proof = scenario.take_from_sender<VoteProofNFT>();
+
+        assert!(vote_proof.vote_proof_url().inner_url() == b"data:image/jpeg;base64,...".to_ascii_string());
+        scenario.return_to_sender(vote_proof)
+    };
+
+    scenario.end();
+}
