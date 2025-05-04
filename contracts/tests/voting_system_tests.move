@@ -235,7 +235,7 @@ fun test_issue_vote_proof() {
     {
         let vote_proof = scenario.take_from_sender<VoteProofNFT>();
 
-        assert!(vote_proof.vote_proof_url().inner_url() == b"data:image/jpeg;base64,...".to_ascii_string(), EWrongNftUrl);
+        assert!(vote_proof.vote_proof_url().inner_url() == b"data:image/jpeg;base64,https://thrangra.sirv.com/vote_yes_nft.jpg".to_ascii_string(), EWrongNftUrl);
         scenario.return_to_sender(vote_proof);
     };
 
