@@ -7,6 +7,11 @@ use governance::dashboard::AdminCap;
 
 const EDuplicateVote: u64 = 0;
 
+public enum ProposalStatus has store, drop {
+    Active,
+    Delisted,
+}
+
 public struct Proposal has key {
     id: UID,
     title: String,
@@ -14,6 +19,7 @@ public struct Proposal has key {
     voted_yes_count: u64,
     voted_no_count: u64,
     expiration: u64,
+    status: ProposalStatus,
     creator: address,
     voters: Table<address, bool>,
 }
@@ -45,6 +51,10 @@ public fun vote(self: &mut Proposal, vote_yes: bool, ctx: &mut TxContext) {
 
 public fun vote_proof_url(self: &VoteProofNFT): Url {
     self.url
+}
+
+public fun status(self: &Proposal): &ProposalStatus {
+    &self.status
 }
 
 public fun title(self: &Proposal): String {
@@ -92,6 +102,7 @@ public fun create(
         voted_no_count: 0,
         expiration,
         creator: ctx.sender(),
+        status: ProposalStatus::Active,
         voters: table::new(ctx),
     };
 
@@ -99,6 +110,10 @@ public fun create(
     transfer::share_object( proposal);
 
     id
+}
+
+public fun change_status(self: &mut Proposal, _admin_cap: &AdminCap, status: ProposalStatus) {
+    self.status = status;
 }
 
 fun issue_vote_proof(proposal: &Proposal, vote_yes: bool, ctx: &mut TxContext) {
@@ -127,4 +142,24 @@ fun issue_vote_proof(proposal: &Proposal, vote_yes: bool, ctx: &mut TxContext) {
     };
 
     transfer::transfer(proof, ctx.sender())
+}
+
+#[test_only]
+public fun is_active(self: &Proposal): bool {
+    let status = self.status();
+
+    match (status) {
+        ProposalStatus::Active => true,
+        _ => false,
+    }
+}
+
+#[test_only]
+public fun set_active_status(self: &mut Proposal, admin_cap: &AdminCap) {
+    self.change_status(admin_cap, ProposalStatus::Active);
+}
+
+#[test_only]
+public fun set_delisted_status(self: &mut Proposal, admin_cap: &AdminCap) {
+    self.change_status(admin_cap, ProposalStatus::Delisted);
 }

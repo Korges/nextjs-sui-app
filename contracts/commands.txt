@@ -1,0 +1,15 @@
+ sui client ptb \
+   --move-call 0xf1c410b71068cf88c23f9ade9687b77a8f267f23a5b47f24dd595cbbf99fc56c::proposal::create \
+   @0x6d7eb3e27bb56603d84e4a232e515f70d8a0ae8036fe932c1bd5ff4adee4ad67 \
+   '"Proposal 1"' '"Proposal description 1"' 1740309061 \
+   --assign proposal_id \
+   --move-call 0xf1c410b71068cf88c23f9ade9687b77a8f267f23a5b47f24dd595cbbf99fc56c::dashboard::register_proposal \
+   @0x0618243a000c1f68dfde62b77ed224e032f3d053840b26a6578dc93981322f50 \
+   @0x6d7eb3e27bb56603d84e4a232e515f70d8a0ae8036fe932c1bd5ff4adee4ad67 proposal_id \
+   --move-call 0xf1c410b71068cf88c23f9ade9687b77a8f267f23a5b47f24dd595cbbf99fc56c::proposal::create \
+   @0x6d7eb3e27bb56603d84e4a232e515f70d8a0ae8036fe932c1bd5ff4adee4ad67 \
+   '"Proposal 2"' '"Proposal description 2"' 1740309061 \
+   --assign proposal_id \
+   --move-call 0xf1c410b71068cf88c23f9ade9687b77a8f267f23a5b47f24dd595cbbf99fc56c::dashboard::register_proposal \
+   @0x0618243a000c1f68dfde62b77ed224e032f3d053840b26a6578dc93981322f50 \
+   @0x6d7eb3e27bb56603d84e4a232e515f70d8a0ae8036fe932c1bd5ff4adee4ad67 proposal_id 
