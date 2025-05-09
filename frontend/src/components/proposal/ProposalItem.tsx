@@ -64,7 +64,9 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
         proposal={proposal}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onVote={(votedYes: boolean) => console.log(votedYes)}
+        onVote={(votedYes: boolean) => {
+          setIsModalOpen(false);
+        }}
       />
     </>
   );
@@ -78,7 +80,7 @@ function parseProposal(data: SuiObjectData): Proposal | null {
   return {
     ...rest,
     votedYesCount: Number(voted_yes_count),
-    votedNoCount: Number(voted_yes_count),
+    votedNoCount: Number(voted_no_count),
     expiration: Number(expiration)
   }
 }

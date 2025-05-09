@@ -1,4 +1,7 @@
+import { useNetworkVariable } from "@/config/networkConfig";
 import { Proposal } from "@/types";
+import { ConnectButton, useCurrentWallet, useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
 import { FC } from "react";
 
 interface VoteModalProps {
@@ -15,7 +18,41 @@ export const VoteModal: FC<VoteModalProps> = ({
   onClose,
   onVote
 }) => {
+  const { connectionStatus } = useCurrentWallet();
+  const suiClient = useSuiClient();
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const packageId = useNetworkVariable("packageId");
+
   if (!isOpen) return null;
+
+  const vote = (voteYes: boolean) => {
+    const tx = new Transaction();
+    tx.moveCall({
+      arguments: [
+        tx.object(proposal.id.id),
+        tx.pure.bool(voteYes),
+        tx.object("0x6")
+      ],
+      target: `${packageId}::proposal::vote`
+    });
+
+    signAndExecute({
+      transaction: tx
+    }, {
+      onError: () => {
+        alert("Tx Failed!")
+      },
+      onSuccess: async ({digest}) => {
+        const { effects } = await suiClient.waitForTransaction({
+          digest,
+          options: {
+            showEffects: true
+          }
+        });
+        onVote(voteYes);
+      }
+    });
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -28,18 +65,27 @@ export const VoteModal: FC<VoteModalProps> = ({
             <span>👎No votes: {proposal.votedNoCount}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <button
-              className="flex-1 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition-colors"
-              onClick={() => onVote(true)}
-            >
-              Vote Yes
-            </button>
-            <button
-              className="flex-1 bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors"
-              onClick={() => onVote(false)}
-            >
-              Vote No
-            </button>
+            { connectionStatus === "connected" ? 
+             <>
+             <button
+               className="flex-1 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition-colors"
+               onClick={() => vote(true)}
+             >
+               Vote Yes
+             </button>
+             <button
+               className="flex-1 bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors"
+               onClick={() => vote(false)}
+             >
+               Vote No
+           </button>
+           </>
+           : <div>
+              <ConnectButton connectText="Connect to vote"/>
+            </div>
+            
+          }
+           
           </div>
           <button
             onClick={onClose}
