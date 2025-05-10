@@ -2,7 +2,8 @@ import { useNetworkVariable } from "@/config/networkConfig";
 import { Proposal } from "@/types";
 import { ConnectButton, useCurrentWallet, useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
-import { FC } from "react";
+import { FC, useRef } from "react";
+import { toast } from "react-toastify";
 
 interface VoteModalProps {
   proposal: Proposal;
@@ -22,8 +23,15 @@ export const VoteModal: FC<VoteModalProps> = ({
   const suiClient = useSuiClient();
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
   const packageId = useNetworkVariable("packageId");
+  const toastId = useRef<number | string>();
 
   if (!isOpen) return null;
+
+  const showToast = (message: string) => toastId.current = toast(message);
+  const dismissToast = (message: string) => {
+    toast.dismiss(toastId.current);
+    toast(message, {autoClose: 2000});
+  }
 
   const vote = (voteYes: boolean) => {
     const tx = new Transaction();
@@ -36,11 +44,12 @@ export const VoteModal: FC<VoteModalProps> = ({
       target: `${packageId}::proposal::vote`
     });
 
+    showToast("Processing Transaction");
     signAndExecute({
       transaction: tx
     }, {
       onError: () => {
-        alert("Tx Failed!")
+        dismissToast("Transaction Failed!");
       },
       onSuccess: async ({digest}) => {
         const { effects } = await suiClient.waitForTransaction({
@@ -49,6 +58,7 @@ export const VoteModal: FC<VoteModalProps> = ({
             showEffects: true
           }
         });
+        dismissToast("Transaction Succesful!");
         onVote(voteYes);
       }
     });

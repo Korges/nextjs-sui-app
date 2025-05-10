@@ -5,6 +5,7 @@ import { SuiClientProvider, WalletProvider } from "@mysten/dapp-kit";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { networkConfig } from "@/config/networkConfig";
+import { ToastContainer } from "react-toastify";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient();
@@ -13,6 +14,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
         <WalletProvider autoConnect>
+          <ToastContainer/>
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />
