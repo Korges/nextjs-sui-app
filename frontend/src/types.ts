@@ -10,3 +10,9 @@ export type Proposal = {
   creator: string,
   voter_registry: string[]
 };
+
+export interface VoteNft {
+  id: SuiID;
+  proposalId: string;
+  url: string;
+}

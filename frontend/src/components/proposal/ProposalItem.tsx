@@ -7,9 +7,10 @@ import { VoteModal } from "./VoteModal";
 
 interface ProposalItemProps {
   id: string;
+  hasVoted: boolean;
 };
 
-export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
+export const ProposalItem: FC<ProposalItemProps> = ({ id, hasVoted }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     data: dataResponse,
@@ -32,7 +33,6 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
 
   const expiration = proposal.expiration;
   const isExpired = isUnixTimeExpired(expiration);
-
 
   return (
     <>
@@ -62,6 +62,7 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
       </div>
       <VoteModal
         proposal={proposal}
+        hasVoted={hasVoted}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onVote={(votedYes: boolean) => {
