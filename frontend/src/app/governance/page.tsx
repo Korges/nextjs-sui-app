@@ -9,7 +9,7 @@ import { PaginatedObjectsResponse, SuiObjectData } from "@mysten/sui/client";
 
 const ProposalView = () => {
   const dashboardId = useNetworkVariable("dashboardId");
-  const { data: voteNftsRes } = useVoteNfts();
+  const { data: voteNftsRes, refetch: refetchNfts } = useVoteNfts();
 
   const {
     data: dataResponse,
@@ -34,17 +34,17 @@ const ProposalView = () => {
       <h1 className="text-4xl font-bold mb-8">New Proposals</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {getDashboardFields(dataResponse.data)?.proposals_ids.map((id) => (
-          <ProposalItem key={id} id={id} hasVoted={checkVoteNfts(voteNfts, id)}/>
+          <ProposalItem 
+            key={id}
+            id={id}
+            onVoteTxSuccess={() => refetchNfts()}
+            voteNft={voteNfts.find((nft) => nft.proposalId === id)}
+          />
         ))}
       </div>
     </>
   );
 };
-
-function checkVoteNfts(nfts: VoteNft[], proposalId: string) {
-  return nfts.some(nft => nft.proposalId === proposalId)
-
-}
 
 function getDashboardFields(data: SuiObjectData) {
   if (data.content?.dataType !== "moveObject") return null;

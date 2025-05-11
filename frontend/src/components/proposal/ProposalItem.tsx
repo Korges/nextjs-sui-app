@@ -1,20 +1,22 @@
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { FC, useState } from "react";
 import { CustomText } from "../Shared";
-import { Proposal } from "@/types";
+import { Proposal, VoteNft } from "@/types";
 import { SuiObjectData } from "@mysten/sui/client";
 import { VoteModal } from "./VoteModal";
 
 interface ProposalItemProps {
   id: string;
-  hasVoted: boolean;
+  voteNft: VoteNft | undefined;
+  onVoteTxSuccess: () => void;
 };
 
-export const ProposalItem: FC<ProposalItemProps> = ({ id, hasVoted }) => {
+export const ProposalItem: FC<ProposalItemProps> = ({ id, voteNft, onVoteTxSuccess }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     data: dataResponse,
     error,
+    refetch,
     isPending,
   } = useSuiClientQuery("getObject", {
     id,
@@ -41,7 +43,11 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id, hasVoted }) => {
         className={`${isExpired ? "cursor-not-allowed border-gray-600" : "hover:border-blue-500"}
           p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800  transition-colors cursor-pointer`}
       >
-        <p className={`${isExpired ? "text-gray-500" : "text-gray-700"} text-xl font-semibold mb-2"`}>Title: {proposal.title}</p>
+        <div className="flex justify-between">
+          <p className={`${isExpired ? "text-gray-500" : "text-gray-700"} text-xl font-semibold mb-2"`}>Title: {proposal.title}</p>
+          { !!voteNft && <img className="w-8 h-8 rounded-full" src={voteNft?.url}/>}
+        </div>
+
         <p className={`${isExpired ? "text-gray-500" : "text-gray-700"} dark:text-gray-300}`}>{proposal.description}</p>
         <div className="flex items-center justify-between mt-4">
           <div className="flex space-x-4">
@@ -62,10 +68,12 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id, hasVoted }) => {
       </div>
       <VoteModal
         proposal={proposal}
-        hasVoted={hasVoted}
+        hasVoted={!!voteNft}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onVote={(votedYes: boolean) => {
+        onVote={() => {
+          refetch();
+          onVoteTxSuccess();
           setIsModalOpen(false);
         }}
       />
