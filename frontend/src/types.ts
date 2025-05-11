@@ -20,3 +20,5 @@ export interface VoteNft {
   proposalId: string;
   url: string;
 }
+
+export type NetworkType = 'testnet' | 'devnet' | 'mainnet';

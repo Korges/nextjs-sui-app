@@ -72,7 +72,7 @@ function getVoteNft(nftData: SuiObjectData | undefined | null): VoteNft {
     proposalId,
     id,
     url
-  }
+  };
 }
 
 export default ProposalView;

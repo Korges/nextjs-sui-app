@@ -25,7 +25,7 @@ export const VoteModal: FC<VoteModalProps> = ({
   const suiClient = useSuiClient();
   const { mutate: signAndExecute, isPending, isSuccess, reset } = useSignAndExecuteTransaction();
   const packageId = useNetworkVariable("packageId");
-  const toastId = useRef<number | string>();
+  const toastId = useRef<number | string>(0);
 
   if (!isOpen) return null;
 
@@ -54,7 +54,7 @@ export const VoteModal: FC<VoteModalProps> = ({
         dismissToast("Transaction Failed!");
       },
       onSuccess: async ({digest}) => {
-        const { effects } = await suiClient.waitForTransaction({
+        await suiClient.waitForTransaction({
           digest,
           options: {
             showEffects: true
