@@ -25,9 +25,9 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id, voteNft, onVoteTxSucce
     },
   });
 
-  if (isPending) return <CustomText centered text="Loading..."/>
-  if (error) return <CustomText isError text={`Error: ${error.message}`}/>
-  if (!dataResponse.data) return <CustomText text="Not Found..."/>
+  if (isPending) return <CustomText centered text="Loading..."/>;
+  if (error) return <CustomText isError text={`Error: ${error.message}`}/>;
+  if (!dataResponse.data) return null;
 
   const proposal = parseProposal(dataResponse.data);
 
