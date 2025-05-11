@@ -33,8 +33,9 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id, voteNft, onVoteTxSucce
 
   if(!proposal) return <CustomText text="No data found"/>
 
+  const isDelisted = proposal.status.variant === "Delisted";
   const expiration = proposal.expiration;
-  const isExpired = isUnixTimeExpired(expiration);
+  const isExpired = isUnixTimeExpired(expiration) || isDelisted;
 
   return (
     <>
@@ -61,8 +62,9 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id, voteNft, onVoteTxSucce
             </div>
           </div>
           <div>
-            <CustomText text={formatUnixTime(expiration)}/>
-            <p className={`${isExpired ? "text-gray-600" : "text-gray-300"}`}>{formatUnixTime(expiration)}</p>
+            <p className={`${isExpired ? "text-gray-600" : "text-gray-300"}`}>
+              { isDelisted ? "Delisted" : formatUnixTime(expiration)}
+            </p>
           </div>
         </div>
       </div>
