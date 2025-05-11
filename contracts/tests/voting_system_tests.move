@@ -5,7 +5,6 @@ use sui::test_scenario;
 use sui::clock;
 use governance::proposal::{Self, Proposal, VoteProofNFT};
 use governance::dashboard::{Self, AdminCap, Dashboard};
-use sui::test_scenario::EEmptyInventory;
 
 const EWrongVoteCount: u64 = 0;
 const EWrongNftUrl: u64 = 1;
@@ -329,7 +328,6 @@ fun test_voting_expiration() {
 #[test]
 #[expected_failure(abort_code = test_scenario::EEmptyInventory)]
 fun test_remove_proposal() {
-    let bob = @0xB0B;
     let admin = @0xA01;
 
     let mut scenario = test_scenario::begin(admin);
